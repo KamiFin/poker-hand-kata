@@ -16,4 +16,8 @@ export class Card {
     public getSymbol(): CardSymbol {
         return this.symbol;
     }
+
+    public toString(): string {
+        return this.symbol + this.suit
+    }
 }
