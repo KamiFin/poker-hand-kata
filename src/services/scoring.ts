@@ -1,37 +1,49 @@
 import { Card } from "../modules/Card";
 import { Player } from "../modules/Player";
-import { getCardNumberValue } from "./card";
+import { getCardNumberValue, getCardSymbol } from "./card";
 
-export interface IPlayerWinner {
-    winners: string,
+interface IFinalScore {
+    winnersText: string,
     reason: string,
 }
 
-export function getWinner(players: Player[]): IPlayerWinner {
-
-    const winners = getHighestCardWinner(players);
-    return {winners: winners[0].getName(), reason: "Highest card"};
+export function getWinner(players: Player[]): IFinalScore {
+    let winnersText: string[] = [];
+    const winners = calculateWinners(players);
+    
+    if (winners.players && winners.players.length > 0) {
+        winnersText = winners.players.map((player) => "|".concat(player.getName()).concat("|"));
+        if(winners.players.length > 1) {
+            winners.reason = "Tie";
+        }
+    }
+    return {winnersText: winnersText.join(""), reason: winners.reason};
 } 
 
-export interface IHighestCardWinner {
-    name: string,
+interface IPlayersWinner {
+    players: Player[],
     reason: string,
 }
 
-function getHighestCardWinner(players: Player[]): Player[] {
-    const highestCard =  Math.max(...players.map((player) => getHighestCardValueInHand(player.getHand())));
-    return players.filter((player) => highestCard === getHighestCardValueInHand(player.getHand()));
+function calculateWinners(players: Player[]): IPlayersWinner {
+    let winners: IPlayersWinner;
+    winners = getFlushWinners(players);
+    if(winners.players && winners.players.length > 0) return winners;
+    winners = getHighestCardWinners(players); 
+    return winners;
 }
 
-function getHighestCardValueInHand(hand: Card[]): number {
-    return Math.max(...hand.map((card) => getCardNumberValue(card.getSymbol())));
+
+function getHighestCardWinners(players: Player[]): IPlayersWinner {
+    const highestCard =  Math.max(...players.map((player) => player.getHighestCardValueInHand()));
+    return {players: players.filter((player) => highestCard === player.getHighestCardValueInHand()), reason: "Highest card: ".concat(getCardSymbol(highestCard))};
 }
 
-function getHighestCardInHand(hand: Card[]): Card {
-    const highestCard = Math.max(...hand.map((card) => getCardNumberValue(card.getSymbol())));
-    return hand.find((card) => getCardNumberValue(card.getSymbol()) === highestCard);
-}
-
-function haveHighestCard() {
-
+function getFlushWinners(players: Player[]): IPlayersWinner {
+    let winners = players.filter((player) => player.getFlush());
+    let reason = "";
+    if(winners && winners.length === 1) {
+        reason = "Flush: ".concat(winners[0].getFlush());
+    }    
+    return {players: winners, reason};
 }

@@ -1,3 +1,4 @@
+import { getCardNumberValue } from "../services/card";
 import { Card } from "./Card";
 
 export class Player {
@@ -22,5 +23,19 @@ export class Player {
 
     public addCardToHand(card: Card) {
         this.hand.push(card);
+    }
+
+    public getHighestCardValueInHand(): number {
+        return Math.max(...this.hand.map((card) => getCardNumberValue(card.getSymbol())));
+    }
+
+    public getHighestCardInHand(): Card {
+        const highestCard = Math.max(...this.hand.map((card) => getCardNumberValue(card.getSymbol())));
+        return this.hand.find((card) => getCardNumberValue(card.getSymbol()) === highestCard);
+    }
+
+    public getFlush(): string {
+        if(this.hand[0].getSuit() === this.hand[4].getSuit()) return this.hand[0].getSuit();
+        return undefined;
     }
 }

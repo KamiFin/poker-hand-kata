@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { CardSuit, CardSymbol, cardValues } from "../src/constants/Card";
 import { getWinner } from "../src/services/scoring";
+import { createHand } from "../src/services/card";
 import { Card } from "../src/modules/Card";
 import { Player } from "../src/modules/Player";
 
@@ -16,19 +17,11 @@ describe('Player tests', function () {
         expect(player.getHand().length).to.equal(1);
     });
 
-    it('Get winner: 2 players 1 card each -> Tom wins high card', function () {
+    it('Create one player with five card in hand', function () {
         const tom = new Player("Tom");
-        const bob = new Player("Bob");
 
-        const tomCard = new Card(CardSuit.SPADE, "3");
-        tom.addCardToHand(tomCard);
-
-        const bobCard = new Card(CardSuit.CLUBS, "T");
-        bob.addCardToHand(bobCard);
-
-        const winner = getWinner([tom, bob]);
-        expect(winner.winners).to.equal("Bob");
-
-        console.log(winner);
+        const tomHand = createHand(["2H", "3D", "5S", "9C", "KD"]);
+        tom.setHand(tomHand);
+        expect(tomHand.length).to.equal(5);
     });
 });
