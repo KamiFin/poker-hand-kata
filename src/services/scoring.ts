@@ -28,7 +28,7 @@ interface IPlayersWinner {
 function calculateWinners(players: Player[]): IPlayersWinner {
     let winners: IPlayersWinner;
     winners = getFlushWinners(players);
-    if(winners.players && winners.players.length > 0) return winners;
+    if(winners.players && winners.players.length === 1) return winners;
     winners = getHighestCardWinners(players); 
     return winners;
 }
@@ -42,8 +42,8 @@ function getHighestCardWinners(players: Player[]): IPlayersWinner {
 function getFlushWinners(players: Player[]): IPlayersWinner {
     let winners = players.filter((player) => player.getFlush());
     let reason = "";
-    if(winners && winners.length === 1) {
+    if(winners && winners.length > 0) {
         reason = "Flush: ".concat(winners[0].getFlush());
-    }    
+    }
     return {players: winners, reason};
 }

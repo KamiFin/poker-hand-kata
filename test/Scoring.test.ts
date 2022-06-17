@@ -42,7 +42,7 @@ describe('Scoring tests', function () {
         const tom = new Player("Tom");
         const bob = new Player("Bob");
 
-        const tomHand = createHand(["2S", "3S", "5S", "9S", "TS"]);
+        const tomHand = createHand(["AS", "7S", "6S", "JS", "TS"]);
         tom.setHand(tomHand);
 
         const bobHand = createHand(["2H", "3D", "5S", "9C", "KD"]);
@@ -51,6 +51,22 @@ describe('Scoring tests', function () {
         const winner = getWinner([tom, bob]);
         expect(winner.winnersText).to.equal("|Tom|");
         expect(winner.reason).to.equal("Flush: S");
+
+    });
+
+    it('Get winner: 2 players -> Bob wins with higher flush: S', function () {
+        const tom = new Player("Tom");
+        const bob = new Player("Bob");
+
+        const tomHand = createHand(["2S", "3S", "5S", "9S", "TS"]);
+        tom.setHand(tomHand);
+
+        const bobHand = createHand(["AS", "7S", "6S", "JS", "KS"]);
+        bob.setHand(bobHand);
+
+        const winner = getWinner([tom, bob]);
+        expect(winner.winnersText).to.equal("|Bob|");
+        expect(winner.reason).to.equal("Highest card: A");
 
     });
 });
